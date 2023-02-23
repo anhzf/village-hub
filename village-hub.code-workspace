@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "🏠",
+			"path": ".",
+		},
+		{
+			"name": "👉 App",
+			"path": "./app",
+		},
+		{
+			"name": "👉 Functions",
+			"path": "./functions",
+		},
+	],
+	"settings": {}
+}
