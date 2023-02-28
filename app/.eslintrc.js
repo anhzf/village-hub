@@ -84,6 +84,8 @@ module.exports = {
     'import/prefer-default-export': 'off',
 
     'max-len': ['warn', { code: 150 }],
+    'func-names': 'off',
+    'no-underscore-dangle': 'off',
 
     'prefer-promise-reject-errors': 'off',
 

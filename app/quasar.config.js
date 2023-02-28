@@ -14,15 +14,6 @@
 const { configure } = require('quasar/wrappers');
 
 module.exports = configure((/* ctx */) => ({
-  eslint: {
-    // fix: true,
-    // include = [],
-    // exclude = [],
-    // rawOptions = {},
-    warnings: true,
-    errors: true,
-  },
-
   // https://v2.quasar.dev/quasar-cli-vite/prefetch-feature
   // preFetch: true,
 
@@ -30,7 +21,8 @@ module.exports = configure((/* ctx */) => ({
   // --> boot files are part of "main.js"
   // https://v2.quasar.dev/quasar-cli-vite/boot-files
   boot: [
-
+    'vuefire',
+    'security',
   ],
 
   // https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#css
@@ -68,7 +60,9 @@ module.exports = configure((/* ctx */) => ({
 
     // publicPath: '/',
     // analyze: true,
-    // env: {},
+    env: {
+      FIREBASE_CONFIG: JSON.parse(process.env.FIREBASE_CONFIG),
+    },
     // rawDefine: {}
     // ignorePublicFolder: true,
     // minify: false,
@@ -104,7 +98,9 @@ module.exports = configure((/* ctx */) => ({
     // directives: [],
 
     // Quasar plugins
-    plugins: [],
+    plugins: [
+      'Dialog', 'Notify', 'Loading', 'LoadingBar',
+    ],
   },
 
   // animations: 'all', // --- includes all animations
