@@ -1,3 +1,19 @@
+export interface MessageTemplateComponent {
+  type: 'body' | 'footer';
+  parameters: {
+    type: 'text';
+    text: string;
+  }[];
+}
+
+export interface SendMessageResponse {
+  messaging_product: 'whatsapp',
+  contacts: ValueContact[];
+  messages: {
+    id: string;
+  }[];
+}
+
 export interface ValueContact {
   wa_id: string;
   profile: {
@@ -91,10 +107,10 @@ export interface ValueMessageTypes {
   video: MessageVideo;
 }
 
-export type ValueMessage<Type extends keyof ValueMessageTypes = 'text'> = {
+export type ValueMessage<Type extends keyof ValueMessageTypes> = {
   type: Type;
-  [key: (keyof ValueMessageTypes)[Type]]: ValueMessageTypes[Type];
-}
+  from: string;
+} & ValueMessageTypes[Type];
 
 export interface ValueMetadata {
   display_phone_number: string;
@@ -109,7 +125,7 @@ export interface ValueStatus {
 
 // }
 
-export interface NotificationPayload {
+export interface NotificationPayload<Type extends keyof ValueMessageTypes> {
   object: 'whatsapp_business_account';
   entry: {
     id: string;
@@ -119,7 +135,7 @@ export interface NotificationPayload {
         metadata: ValueMetadata;
         contacts: ValueContact[];
         errors: ValueError[];
-        messages: ValueMessage[];
+        messages: ValueMessage<Type>[];
         statuses: ValueStatus[];
       },
       field: 'messages'
@@ -127,6 +143,10 @@ export interface NotificationPayload {
   }[];
 }
 
-export const isNotification = (payload: any): payload is NotificationPayload => {
+export const isNotification = <Type extends keyof ValueMessageTypes>(payload: any): payload is NotificationPayload<Type> => {
   return payload.object === 'whatsapp_business_account';
+}
+
+export const isMessage = <Type extends keyof ValueMessageTypes>(type: Type, payload: any): payload is ValueMessage<Type> => {
+  return payload.type === type;
 }

@@ -1,4 +1,10 @@
 import { initializeApp } from 'firebase-admin/app'
-export { default as wa } from './whatsapp'
-
 initializeApp()
+
+import wa from './whatsapp'
+import * as triggers from './triggers'
+
+export const viaWa = {
+  wa,
+  ...triggers,
+}

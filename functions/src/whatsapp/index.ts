@@ -7,6 +7,7 @@ const app = express()
 
 app.use(cors({ origin: true }));
 app.use(express.json());
+app.get('/', (req, res) => res.json('ready!'));
 app.use('/webhook', Webhook);
 
 export default functions.https.onRequest(app);
