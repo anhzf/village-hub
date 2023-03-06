@@ -86,6 +86,7 @@ module.exports = {
     'max-len': ['warn', { code: 150 }],
     'func-names': 'off',
     'no-underscore-dangle': 'off',
+    'no-undef': 'off',
 
     'prefer-promise-reject-errors': 'off',
 

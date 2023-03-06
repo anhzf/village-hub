@@ -18,9 +18,9 @@ const user = useCurrentUser();
 
 const menus: Menu[] = [
   {
-    title: 'Buat undangan',
-    icon: 'forward_to_inbox',
-    to: '/',
+    title: 'Kelola undangan',
+    icon: 'all_inbox',
+    to: '/invitations',
   },
   {
     title: 'Kelola penerima pesan',

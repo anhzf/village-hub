@@ -1,9 +1,9 @@
 <script lang="ts" setup>
-import { Notify, useDialogPluginComponent } from 'quasar';
 import FormSignIn, { Field as SignInFormField } from 'components/FormSignIn.vue';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { Notify, useDialogPluginComponent } from 'quasar';
 import { reactive } from 'vue';
 import { useFirebaseAuth } from 'vuefire';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 
 defineEmits(useDialogPluginComponent.emits);
 
@@ -41,8 +41,25 @@ const onFormSubmit = async (payload: SignInFormField) => {
     @hide="onDialogHide"
   >
     <q-card class="q-dialog-plugin">
+      <div class="close-dialog">
+        <q-btn
+          icon="close"
+          round
+          flat
+          @click="onDialogHide"
+        />
+      </div>
+
       <form-sign-in @submit="onFormSubmit" />
       <q-inner-loading :showing="_ui.isLoading" />
     </q-card>
   </q-dialog>
 </template>
+
+<style lang="sass">
+.close-dialog
+  position: absolute
+  top: 0
+  right: 0
+  z-index: 1
+</style>

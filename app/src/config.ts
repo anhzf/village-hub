@@ -4,6 +4,7 @@ const config = Object.freeze({
   publicUrl: process.env.PUBLIC_URL || window.location.origin,
   firebase: {
     config: process.env.FIREBASE_CONFIG as FirebaseOptions,
+    namespace: 'via-wa__',
     // useEmulator: process.env.FIREBASE_EMULATOR,
     // emulatorHost: 'localhost',
     // emulatorPort: {

@@ -7,11 +7,31 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        component: () => import('pages/IndexPage.vue'),
+        redirect: '/invitations',
+      },
+      {
+        path: 'invitations',
+        component: () => import('pages/InvitationsPage.vue'),
+      },
+      {
+        path: 'invitations/create',
+        component: () => import('pages/CreateInvitationPage.vue'),
+      },
+      {
+        path: 'invitations/:invitationId',
+        name: 'invitation',
+        component: () => import('pages/InvitationPage.vue'),
       },
       {
         path: 'recipients',
         component: () => import('pages/ManageRecipientsPage.vue'),
+      },
+      {
+        path: 'privacy-policy',
+        component: () => import('pages/PrivacyPolicyPage.vue'),
+        meta: {
+          requiresAuth: false,
+        },
       },
     ],
   },

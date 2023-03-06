@@ -2,6 +2,7 @@ import DialogSignIn from 'components/DialogSignIn.vue';
 import { Dialog, Loading, Notify } from 'quasar';
 import { boot } from 'quasar/wrappers';
 import { watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { getCurrentUser, useCurrentUser } from 'vuefire';
 
 export default boot(async () => {
