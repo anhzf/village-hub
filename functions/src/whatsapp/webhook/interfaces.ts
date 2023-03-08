@@ -110,7 +110,9 @@ export interface ValueMessageTypes {
 export type ValueMessage<Type extends keyof ValueMessageTypes> = {
   type: Type;
   from: string;
-} & ValueMessageTypes[Type];
+} & {
+    [key in Type]: key extends Type ? ValueMessageTypes[key] : never;
+  };
 
 export interface ValueMetadata {
   display_phone_number: string;

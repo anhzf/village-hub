@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { collection } from 'firebase/firestore';
 import { QBtnProps, QTableColumn } from 'quasar';
+import config from 'src/config';
 import { Recipient } from 'src/models';
 import { computed, ref } from 'vue';
 import { useCollection, useFirestore } from 'vuefire';
@@ -41,7 +42,7 @@ defineProps<Props>();
 
 const db = useFirestore();
 
-const COLLECTION_REF = collection(db, 'VH__recipients');
+const COLLECTION_REF = collection(db, `${config.firebase.namespace}recipients`);
 
 const { data: recipients } = useCollection<Recipient>(COLLECTION_REF);
 
