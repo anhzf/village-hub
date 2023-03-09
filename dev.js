@@ -6,15 +6,15 @@ dotenv.config()
 concurrently([
   process.argv.includes('--app') && {
     name: 'App',
-    command: 'pnpm -C app dev'
+    command: 'pnpm -C app dev -p 3000'
   },
-  process.argv.includes('--functions') && {
+  process.argv.includes('--fns') && {
     name: 'Functions',
     command: 'pnpm -C functions dev'
   },
-  process.argv.includes('--functions') && {
+  process.argv.includes('--fns') && {
     name: 'Emulator',
-    command: 'firebase emulators:start --only functions'
+    command: 'firebase emulators:start'
   },
 ].filter(Boolean), {
   prefixColors: 'auto',

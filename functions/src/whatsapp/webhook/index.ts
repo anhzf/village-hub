@@ -1,12 +1,14 @@
 import { Router } from 'express';
 import { logger } from 'firebase-functions';
+import { Timestamp } from 'firebase-admin/firestore'
 import config from '../../config';
+import { Invitation, Recipient } from '../../models';
+import { db } from '../../services';
 import { sendMessage } from '../lib';
 import createMessage from '../message-templates';
 import { isMessage, isNotification } from './interfaces';
 
 const router = Router();
-
 
 router.get('/', (req, res) => {
   const { ['hub.mode']: mode, ['hub.challenge']: challenge, ['hub.verify_token']: token } = req.query;
@@ -36,22 +38,61 @@ router.post('/', async (req, res) => {
         .changes.map((change) => {
           if (change.value.messages) {
             return Promise.all(change.value
-              .messages.map((message) => {
-                if (isMessage('button', message)) {
-                  switch (message.button.payload) {
-                    case 'Buka undangan':
-                      return sendMessage(message.from, createMessage.invitation({
-                        recipientName: change.value.contacts[0].profile.name,
-                        eventTitle: 'Percobaan Giriroto Hub',
-                        eventDatetime: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-                        eventLocation: 'WhatsApp masing-masing',
-                        organizer: 'KKN UNS 26 tahun 2023',
-                        organizerName: 'Alwan Nuha Zaky Fadhila'
-                      }));
-                    default:
-                      break;
+              .messages.map(async (message) => {
+                try {
+                  if (isMessage('button', message)) {
+                    switch (message.button.payload) {
+                      case 'Buka undangan':
+                        const recipientsQuery = db.collection(`${config.firebase.namespace}recipients`)
+                          .where('phoneNumber', '==', message.from)
+                          .limit(1);
+                        const recipientSnapshot = await recipientsQuery.get();
+                        const [recipientDoc] = recipientSnapshot.docs;
+
+                        if (recipientDoc) {
+                          const messagesPool = recipientDoc.ref.collection('messages')
+                            .where(message.context.id.replace('wamid.', ''), '!=', null)
+                            .limit(1);
+
+                          const messagesPoolSnapshot = await messagesPool.get();
+                          const [messagesPoolDoc] = messagesPoolSnapshot.docs;
+
+                          logger.debug(messagesPoolSnapshot.docs);
+
+                          if (messagesPoolDoc) {
+                            const invitationId = messagesPoolDoc.data()[message.context.id.replace('wamid.', '')];
+                            const invitationSnap = await db.doc(`${config.firebase.namespace}invitations/${invitationId}`).get();
+
+                            if (invitationSnap.exists) {
+                              const recipient = recipientDoc.data() as Recipient;
+                              const invitation = invitationSnap.data() as Invitation;
+
+                              return sendMessage(message.from, createMessage.invitation({
+                                recipientName: recipient.title,
+                                eventTitle: invitation.eventTitle,
+                                eventDatetime: (invitation.datetime as unknown as Timestamp).toDate(),
+                                eventLocation: invitation.location,
+                                organizer: invitation.organizer,
+                                organizerName: invitation.organizerName,
+                              }));
+                            }
+
+                            logger.debug('invitationId:\t', invitationId);
+                          }
+
+                          throw new Error('Invitation not found or recipient not invited');
+                        }
+
+                        throw new Error('Recipient not found');
+                      default:
+                        break;
+                    }
                   }
+                } catch (err) {
+                  logger.error(err);
+                  return sendMessage(message.from, String(err));
                 }
+
                 return Promise.resolve();
               }))
           }

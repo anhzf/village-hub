@@ -8,6 +8,10 @@ import {
 import * as arr from 'src/utils/array';
 import { useCollection, useDocument, useFirestore } from 'vuefire';
 
+interface InvitationMessageMap extends InvitationMessage {
+  recipientId: string;
+}
+
 const useInvitationRepository = () => {
   const db = useFirestore();
   const collection = $collection(db, `${config.firebase.namespace}invitations`);
@@ -16,14 +20,14 @@ const useInvitationRepository = () => {
    */
   const _createInvitationMessages = async (invitationId: string, recipientIds: string[]) => {
     const messagesCollection = $collection(collection, invitationId, 'messages');
-    const messages: InvitationMessage[] = recipientIds.map((recipientId) => ({
+    const messages: InvitationMessageMap[] = recipientIds.map((recipientId) => ({
       recipientId,
     }));
     const messageChunks: InvitationMessages[] = arr.chunks(messages, 100)
-      .map((_messages, index) => ({
-        sort: index,
-        messages: _messages,
-      }));
+      .map((_messages) => _messages.reduce((acc, message) => ({
+        ...acc,
+        [message.recipientId]: {},
+      }), {}));
 
     const batch = writeBatch(db);
     messageChunks.forEach((messageChunk) => {

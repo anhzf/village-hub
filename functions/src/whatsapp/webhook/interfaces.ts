@@ -110,6 +110,7 @@ export interface ValueMessageTypes {
 export type ValueMessage<Type extends keyof ValueMessageTypes> = {
   type: Type;
   from: string;
+  context: Partial<MessageContext>;
 } & {
     [key in Type]: key extends Type ? ValueMessageTypes[key] : never;
   };

@@ -8,7 +8,7 @@ concurrently([
     name: 'App',
     command: 'pnpm -C app build'
   },
-  process.argv.includes('--functions') && {
+  process.argv.includes('--fns') && {
     name: 'Functions',
     command: 'pnpm -C functions build'
   },

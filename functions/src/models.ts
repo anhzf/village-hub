@@ -26,12 +26,10 @@ export interface Invitation extends Model, Timestamped {
 export type InvitationMessageStatus = typeof INVITATION_MESSAGE_STATUS[number];
 
 export interface InvitationMessage {
-  recipientId: string;
   messageId?: string;
   status?: InvitationMessageStatus;
 }
 
 export interface InvitationMessages {
-  sort: number;
-  messages: InvitationMessage[];
+  [recipientId: string]: InvitationMessage;
 }
