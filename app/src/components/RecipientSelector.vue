@@ -22,13 +22,13 @@ const recipientCols: QTableColumn<Recipient>[] = [
     align: 'left',
     style: 'width: 25%; min-width: 20ch;',
   },
-  {
-    name: 'phoneNumber',
-    label: 'Nomor HP',
-    field: 'phoneNumber',
-    align: 'left',
-    style: 'width: 16ch;',
-  },
+  // {
+  //   name: 'phoneNumber',
+  //   label: 'Nomor HP',
+  //   field: 'phoneNumber',
+  //   align: 'left',
+  //   style: 'width: 16ch;',
+  // },
   {
     name: 'labels',
     label: 'Label',
@@ -94,6 +94,7 @@ const toggleRecipientByLabel = (label: string, v?: boolean) => {
         selection="multiple"
         :filter="filter"
         flat
+        @row-click="(evt, row) => selected.push(row)"
       >
         <template #top>
           <div class="column">
